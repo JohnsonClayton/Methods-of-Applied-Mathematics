@@ -7,12 +7,12 @@ function HW5gseidel(n,factor)
   %Updated iterations of x are computed by the Gauss-Seidel method. 
 
   %Example 1 from notes
-  A = [2,3,1;-6,-10,1;4,5,8];
-  b = [2;-6;6];
+  %A = [2,3,1;-6,-10,1;4,5,8];
+  %b = [2;-6;6];
 
   %Example 2 from notes
-  %A =[-4,1,1,0;1,-4,0,1;1,0,-4,1;0,1,1,-4];
-  %b = [-200;-200;-100;-100];
+  A =[-4,1,1,0;1,-4,0,1;1,0,-4,1;0,1,1,-4];
+  b = [-200;-200;-100;-100];
 
   %Compute the actual solution of Ax = b using x = inv(A)*b
   G = inv(A);      %Compute the inverse of A. 
@@ -69,10 +69,19 @@ function HW5gseidel(n,factor)
   %****In-class work has been leading up to this homework assignment****
   %****Loops should be similar in nature to recent in class work********
   %*********************************************************************
-
+  C=C;
+  b=b;
+  x=x;
+  
   for i=1:n                           % Iterates n times as per requested by user
     for j=1:M                         % Iterates over every row (every x present)
-      x(j) = b(j) - dot(C(j,:), x');  % Calculates the new x_j value
+      dot = 0;
+      for iter=1:M
+        dot = dot + C(j, iter)*x(iter);
+        dot = dot;
+      end
+      
+      x(j) = b(j) - dot;              % Calculates the new x_j value
     end
   end
   
