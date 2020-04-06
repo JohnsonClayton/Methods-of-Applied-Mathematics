@@ -29,9 +29,10 @@ y(1) = y0;
 
 %Heun's Method
 for n = 1:N+1;
-   
-  
-  
+  x(n+1) = x(n) + h;            % Next x-value
+  k1 = h*f(x(n), y(n));         % k1 uses the current slope (this is the predictor)
+  k2 = h*f(x(n+1), y(n)+k1);    % k2 uses the next slope (the predictor's slope)
+  y(n+1) = y(n) + 0.5*(k1+k2);  % Next y-value uses the avg b/t the two slopes/ the corrector
     
   S(n) = n-1;       %Records step number for display in matrix R. 
   X(n) = x(n);      %Records x value at step n

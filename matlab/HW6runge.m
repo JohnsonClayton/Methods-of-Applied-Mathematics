@@ -28,11 +28,12 @@ y(1) = y0;
 
 %Runge-Kutta Method
 for n = 1:N+1;
- 
-    
-    
-    
-    
+  x(n+1) = x(n) + h;
+  k1 = h*f(x(n), y(n));
+  k2 = h*f(x(n)+0.5*h, y(n)+0.5*k1);
+  k3 = h*f(x(n)+0.5*h, y(n)+0.5*k2);
+  k4 = h*f(x(n+1), y(n)+k3);
+  y(n+1) = y(n) + (1/6)*(k1 + 2*k2 + 2*k3 + k4); 
   
   S(n) = n-1;       %Records step number for display in matrix R. 
   X(n) = x(n);      %Records x value at step n
@@ -43,7 +44,7 @@ end
 %We now display results from above as columns of the matrix R. 
 %Use space key to position headers by trial & error after running program
 %The "%7.6f" below specifies decimal format (the f part), with
-%5 digits total, 4 digits to right of decimal point.
+%7 digits total, 6 digits to right of decimal point.
 R=[S' X' Y' G']';  %Results matrix whose columns are S', X', etc. 
 fprintf(' n  x(n)   y(n)     Exact \n');  %These are the column headers
 fprintf('%2d %2.2f %7.6f  %7.6f \n',R); %These adjust decimal formats
