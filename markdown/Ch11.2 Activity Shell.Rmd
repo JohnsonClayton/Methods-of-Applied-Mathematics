@@ -1,0 +1,233 @@
+---
+title: "Ch11.2 R Activity"
+output:
+  html_document: default
+  word_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Clayton Johnson
+- Use R Studio to open this Rmd document from K drive Share folder. 
+- Fill in your name above. 
+- Save this Rmd file to your student K drive folder for this class. 
+
+### Lesson Plan
+
+Today we will spend time on the computers using R within the R Markdown environment. Referring back to previous RPub lesson slides in the weekly folders (as needed), use this docoument to implement R code for the following problems.  
+
+
+#### Problem 1
+
+In the space below, use R to compute $\sin(\pi/5)$ and $\ln(3)$.  Note: R will evaluate your computation when you knit this document (knit to HTML for this activity).  To get things going, here is some sample code for a related problem:
+
+```{r}
+exp(1)
+```
+
+##### Solution 
+
+```{r}
+sin(pi/5)
+```
+
+```{r}
+log(3)
+```
+
+
+#### Problem 2
+
+In the space below, write a program `Ch112ExJ` can evaluate
+
+$$J(U) = hA(U-u_0)$$
+for different values of the variable $U$ where $h=5, A=10, u_0 = 20$. (Hint: Something similar was done recently in the Ch11.2 Slides.)  
+
+##### Solution 
+
+```{r}
+Ch112ExJ <- function(U) {
+
+### Your code here, between the braces {}   
+### When looking at the example in the Ch11.2 slides,
+### note the () around the final term, used for evaluation.
+  
+  h <- 5      # Convective Cooling Coefficient
+  A <- 10     # Area of flux
+  u_0 <- 20   # Initial temperature
+  # U is the user-input temperature
+  
+  return(h*A*(U-u_0))
+  } 
+```
+
+
+
+
+#### Problem 3
+
+For your function $J(U)$ in the above problem, evaluate $J(30)$ using R in the space below. Note:  As long as you have a working formula for $J(U)$ in the previous problem, R will be able to evaluate your result here when you knit the document. (Ch11.2 slides)
+
+##### Solution 
+
+```{r}
+Ch112ExJ(30)
+```
+
+
+#### Problem 4
+
+In the space below, write a sequence of commands that plots $f(x) = 2x+1$ over $[0,3]$, using the color blue for the graph. This plot should have one legend item labeled "y = 2x+1", also colored blue.  (Ch11.2 Slides)
+
+##### Solution 
+
+
+```{r}
+f <- function(x){ ###  Your formula here ###
+  2*x+1
+  }
+### Your code here, for plotting & labeling curve.###
+
+  t_0 = 0
+  t_1 = 3
+
+  N <- 1000     # number of nodes within given time
+  T <- t_1      # time over which we collect values
+  h <- T/N      # sample density over time
+  t <- rep(0, N) # zeros
+  y_vals <- rep(0, N) # zeros
+  t[1] <- t-0     # Start at t_0
+  
+  for(i in 1:N) {
+    t[i] <- t[1]+i*h
+    y_vals[i] <- f(t[i])
+  }
+  
+  plot(t, y_vals,
+       main = "y = 2x + 1",
+        xlab = "x",           #x-axis label
+        ylab = "y",       #y-axis label
+        type = "l",col="blue",          #Line type and color
+        xlim = c(0,T),  #x-axis range vector: c(0,T) = [0,T] 
+        ylim = c(  y_vals[1], y_vals[N]  )  #y-axis range vector: c = "combine"
+       )
+  
+  legend("bottomright",
+         legend = c("y=2x+1"), #Vector of legend items
+         col = c("blue"),  #vector of colors for legend items
+         lty = c(1)
+         )
+  
+  # Better way - Thx dr g
+  curve(f, main = "y = 2x + 1",
+        xlab = "x",           #x-axis label
+        ylab = "y",       #y-axis label
+        type = "l",col="blue",          #Line type and color
+        xlim = c(0,T),  #x-axis range vector: c(0,T) = [0,T] 
+        ylim = c(1, 7 )  #y-axis range vector: c = "combine"
+        )
+  
+  legend("bottomright",
+         legend = c("y=2x+1"), #Vector of legend items
+         col = c("blue"),  #vector of colors for legend items
+         lty = c(1)
+         )
+```
+
+#### Problem 5
+
+The position $y$ and velocity $v$ of a whiffle ball thrown vertically satisfies 
+
+$$
+\begin{aligned} 
+y' & = v, \,\, y(0) = y_0 \\
+v' & = - g  -\frac{c}{m} v , \,\, v(0) = v_0 \\
+\end{aligned}
+$$
+
+Here, $c$ is the damping constant (grams/sec), $m$ is the mass (grams), and $g$ the gravitational acceleration value.  We will take $c/m = 3/sec, \,  g = 9.8 m/sec^2, \, y_0 = 0$.  In the space below, complete the RK4 program `Ch112whiffle` that numerically solves this IVP and plots the solution over the time interval $[0, 2]$ for variable $v0$. After your code is written, run it for $v0 = 15 \, m/sec$. (See HW5 documents, Ch11.2, Ch2.8, etc.)
+
+##### Solution 
+
+
+```{r}
+Ch112whiffle <- function(v0) {
+
+  #v0 is the initial velocity
+  N <- 1000   #N is the number of time nodes
+  T <- 2
+  h <- T/N    #This is the time step size in seconds
+  
+  #System Parameters
+  t0 <- 0
+  y0 <- 0#### Your code here  ####
+  g <-  9.8#### Your code here  #### 
+  c <-  3     
+  m <-  1    
+   
+
+  #Slope functions for ODEs
+  yp <- function(v) {v}     
+  vp <- function(v) {-g - (c/m)*v}  
+ 
+  #Initialize vectors for time t and temperature U. 
+  t <- rep(0, N)   #Vector of N zeros (0 repeated N times)
+  y <- rep(0, N)   #Vector of N zeros (0 repeated N times)
+  v <- rep(0, N)   #Vector of N zeros (0 repeated N times)
+  t[1] <- t0       #Initial time t0
+  y[1] <- y0       #Initial temperature
+  v[1] <- v0       #Initial temperature
+
+  
+  #Runge-Kutta Loop (Generate temperature vectors U1 & U2)
+  for(i in 1:N) {
+    ay <- h*yp(v[i]);                        
+    av <- h*vp(v[i]);                        
+    by <- h*yp(v[i]+0.5*ay);
+    bv <- h*vp(v[i]+0.5*av);
+    cy <- h*yp(v[i]+0.5*by);
+    cv <- h*vp(v[i]+0.5*bv);
+    dy <- h*yp(v[i]+cy);
+    dv <- h*vp(v[i]+cv);
+    y[i+1] <- y[i]+(1/6)*(ay+2*by+2*cy+dy); #Next y value
+    v[i+1] <- v[i]+(1/6)*(av+2*bv+2*cv+dv); #Next v value
+    t[i+1] <- t[i] + h                      #Next t value
+    }
+  
+  #Plot results
+  plot(t,y,                
+        main = "Vertical Distance",
+        xlab = "t (seconds)",            
+        ylab = "Height of Whiffle Ball (m)",     
+        type = "l",col="blue",    #Line type and color
+        xlim = c(0,2),  #x-axis range vector: c(0,T) = [0,T] 
+        ylim = c(-4,6)  #y-axis range vector: c = "combine"
+       )
+  
+  lines(t,v, type="l",col="red")    
+  
+  z <- rep(0, N+1)
+  lines(t,z, type="l",col="green", lty=2)
+  
+  legend("topright",
+         legend = c("Height", "Velocity"), #Vector of legend items
+         col = c("blue","red"),  #vector of colors for legend items
+         lty = c(1,1)            #Vector of line types for legend items
+         )
+}
+```
+
+```{r}
+####  Your command here for implementing code at v0 = 15.  ####
+Ch112whiffle(15)
+````
+
+
+
+
+
+
+

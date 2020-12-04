@@ -1,0 +1,741 @@
+---
+title: "Cholera Case Study"
+output:
+  html_document: default
+  word_document: default
+  pdf_document: default
+---
+
+[Clayton Johnson]{style="float:right"}  
+[MATH466 - Methods of]{style="float:right"}  
+[Applied Mathematics III]{style="float:right"}    
+
+# 5.3: Cholera Case Study - Extended
+
+## Goals  
+The primary goal of this work is to present on the model developed in Section 5.3 - Case Study: Cholera from <u>Mathematical Modelling with Case Studies</u> by B. Barnes and G.R. Fulford. Additionally, we will extend this work through creative use of exercises provided in the text, namely exercises 5.4, 5.6, 5.7, and 5.24, as they complement the case study appropriately.   
+
+This work is organized as follows. There will first be a background discussion of Cholera, providing motivation and context for developing the model. Following this will be a brief statement of assumptions for the models. The third section will focus on developing the model, followed by a numerical solution and discussion. Afterwards, we will provide various extensions for the model, lending it to more realistic scenarios.   
+
+## Background Discussion  
+In this section, we hope to introduce the reader to one of the terrible diseases ravaging communities across the globe, as well as provide some background details to aid in the development of a model. 
+
+### What is Cholera?  
+Cholera is a disease caused by bacteria, specifically *Vibrio cholerae*, in which the infected individual may suffer from a series of serious symptoms such as cramps, diarrhea, dehydration, and kidney failure [1]. Individuals that survive infection will remain resistant to the bacteria for a period of two years. Cholera is often caused by the contamination of local water supplies by fecal matter. As such, the primary method of contraction is through contact with contaminated water through cooking or drinking. Once individuals are infected, the bacteria will reproduce and be excreted back into the water system. In turn, the additional bacteria will infect more individuals. Cholera outbreaks are rare in more-developed nations due to advanced water infrastructure both preventing leaks and disinfecting water.   
+
+While treating Cholera infections is trivial, many poverty-stricken communities experiencing natural disasters will be the most at-risk due to fecal contamination of water supplies compounded with few medical services. Cholera will spread quickly through these communities, e.g. Haiti experienced an earthquake in 2010. Consequently, even with rapid responses from the Center for Disease Control and Prevention (CDC) and the Haitian Ministry of Public Health and Population (MSPP), over 8,000 individuals died due to the outbreak of Cholera, with outbreaks continuing to this day [2]. There are almost 150,000 annual deaths attributed to Cholera infections [3].    
+
+Developing models to describe the populations of Cholera-infected individuals and bacteria can help predict and prevent further outbreaks.
+
+## Assumptions  
+There are a few assumptions we must make for develop the Cholera model. Primarily, we will assume that the contraction of Cholera is *only* through contact with contaminated water. While Cholera may be contracted through a variety of ways -- such as through shellfish, meat, or grain consumption [4] -- the models will be overly-complicated for our purposes. Additionally, we will assume that immunity lasts forever. While this isn't realistic, it is a valid assumption so long as we don't use this model to project past two years. This will change in the endemic extension of the Cholera model. The final three assumptions include 1) bacteria is introduced through the first infected individual, 2) latency period between when a susceptible individual becomes infected and becomes infectious is zero, and 3) there are no births or deaths within the populations. These assumptions are limiting in their realism, however the second and third will be investigated near the end of this work.  
+
+Below is a list of all assumptions:  
+ - Contraction only through contact with water  
+ - Immunity lasts *forever*  
+ - Limited bacteria introduction  
+ - No latency between susceptible and infected individual  
+ - No population change  
+
+## Developing the Cholera Model  
+This section will focus on the development of the Cholera model, in which we describe the population sizes of three groups: susceptibles ($S$), infected ($I$), and the bacteria ($B$), and how they change over time. In developing a model for the populations in a Cholera outbreak, we must first discuss the populations and their interactions. Note that we are not currently describing the recovered ($R$) population size due to the    
+
+### Compartment Diagram and Word Equation  
+Let us begin by creating a compartment diagram to describe the interactions of the populations. This is presented in Figure 1.
+<img src="./SIRBCholera.png" width=75% height=75% style="display: block; margin-left: auto; margin-right: auto;" />
+<figcaption style="text-align:center;">**Figure 1:** Compartment Diagram describing interactions between the Susceptible ($S$), Infected ($I$), Recovered ($R$), and Bacteria ($B$) populations.</figcaption>  
+
+Disregarding the recovered population for now, we convert the compartment diagram (Figure 1) into the word equation, below.  
+
+$$ 
+\begin{aligned}
+  \begin{Bmatrix}
+    \mathrm{rate \, of} \\
+    \mathrm{change \, of} \\
+    \mathrm{susceptible \, population} \\
+  \end{Bmatrix} &= 
+  \begin{Bmatrix}
+    \mathrm{rate \, of} \\
+    \mathrm{additions \, to} \\
+    \mathrm{susceptible \, population} \\
+  \end{Bmatrix}
+  -
+  \begin{Bmatrix}
+    \mathrm{rate \, of} \\
+    \mathrm{removals \, from} \\
+    \mathrm{susceptible \, population} \\
+  \end{Bmatrix},
+  \\
+  
+  \begin{Bmatrix}
+    \mathrm{rate \, of} \\
+    \mathrm{change \, of} \\
+    \mathrm{infected \, population} \\
+  \end{Bmatrix} &= 
+  
+  
+  \begin{Bmatrix}
+    \mathrm{rate \, of} \\
+    \mathrm{additions \, to} \\
+    \mathrm{infected \, population} \\
+  \end{Bmatrix}
+  -
+  \begin{Bmatrix}
+    \mathrm{rate \, of} \\
+    \mathrm{removals \, from} \\
+    \mathrm{infected \, population} \\
+  \end{Bmatrix},
+  \\
+  
+  \begin{Bmatrix}
+    \mathrm{rate \, of} \\
+    \mathrm{change \, of} \\
+    \mathrm{bacteria \, population} \\
+  \end{Bmatrix} &= 
+  \begin{Bmatrix}
+    \mathrm{rate \, of} \\
+    \mathrm{additions \, to} \\
+    \mathrm{bacteria \, population} \\
+  \end{Bmatrix}
+  -
+  \begin{Bmatrix}
+    \mathrm{rate \, of} \\
+    \mathrm{removals \, from} \\
+    \mathrm{bacteria \, population} \\
+  \end{Bmatrix}.
+\end{aligned}
+$$
+
+### Variables, Parameters, and the Derivation of Differential Equations  
+This section will focus on developing our Cholera model using the presented word equations from the previous section. Due to the aforementioned assumptions, we know that 
+
+$$\begin{Bmatrix} \mathrm{rate \, of} \\ \mathrm{additions \, to} \\ \mathrm{susceptible \, population} \\ \end{Bmatrix} = 0,$$
+
+as well as that the removal rates from both the susceptible and infected populations are only due to infections and recoveries of individuals. Further, the bacteria population is resupplied by infected individuals and in accordance to their net growth rate within the water system. Note that there is no acting force removing bacteria from the water. Thus, we may simplify our word equations.  
+
+$$
+\begin{align*}
+  \begin{Bmatrix}
+    \mathrm{rate \, of} \\
+    \mathrm{change \, of} \\
+    \mathrm{susceptible \, population} \\
+  \end{Bmatrix} &= 
+  -
+  \begin{Bmatrix}
+    \mathrm{rate \, of} \\
+    \mathrm{infections} \\
+  \end{Bmatrix},
+  \\
+  
+  \begin{Bmatrix}
+    \mathrm{rate \, of} \\
+    \mathrm{change \, of} \\
+    \mathrm{infected \, population} \\
+  \end{Bmatrix} &= 
+  \begin{Bmatrix}
+    \mathrm{rate \, of} \\
+    \mathrm{infections} \\
+  \end{Bmatrix}
+  -
+  \begin{Bmatrix}
+    \mathrm{rate \, of} \\
+    \mathrm{recovery} \\
+  \end{Bmatrix},
+  \\
+  
+  \begin{Bmatrix}
+    \mathrm{rate \, of} \\
+    \mathrm{change \, of} \\
+    \mathrm{bacteria \, population} \\
+  \end{Bmatrix} &= 
+  \begin{Bmatrix}
+    \mathrm{rate \, of} \\
+    \mathrm{bacteria \, excretion} \\
+    \mathrm{by \, infected \, population} \\
+  \end{Bmatrix}
+  +
+  \begin{Bmatrix}
+    \mathrm{rate \, of} \\
+    \mathrm{net \, growth \, in} \\
+    \mathrm{bacteria \, population} \\
+  \end{Bmatrix}.
+\end{align*}
+$$
+
+Substituting in our derivatives and respective values, we get the following differential equations, 
+
+$$
+\begin{align*}
+  \frac{dS}{dt} &= - \lambda (t) S, \\
+  \frac{dI}{dt} &= \lambda (t) S - \gamma I, \\
+  \frac{dB}{dt} &= e_{xcr}I + (n_b - m_b)B,
+\end{align*}
+$$
+
+where $\lambda (t)$ is the force of infection at time $t$, $\gamma$ is the recovery rate, $e_{xcr}$ is the rate at which bacteria is excreted from infected individuals, and $(n_b-m_b)$ is the per capita growth rate of the bacteria. Typically, the bacteria will not reproduce fast enough in the water supply alone, thus $(n_b - m_b) < 0$. 
+
+#### Solving for $\lambda (t)$
+What is this "force of infection", $\lambda (t)$ function? Seeing as $\lambda (t) S$ is the only term decreasing from the susceptible population and adding to the infected population, $\lambda (t)$ *must* be describing the likelihood of infection for a member of the susceptible population. We will define this force as, 
+
+$$
+\lambda (t) = c \frac{B}{k_{50} + B},
+$$
+
+where $c$ is the average number of contacts with contaminated water sources individuals have on a daily basis and $k_{50}$ is the population of bacteria at which there is a 50% chance of infection. Note that $B$ is a function of time. Substituting this function into our differential equations, we have 
+
+$$
+\begin{align*}
+  \frac{dS}{dt} &= - c \frac{B}{k_{50} + B} S, \\
+  \frac{dI}{dt} &= c \frac{B}{k_{50} + B} S - \gamma I, \\
+  \frac{dB}{dt} &= e_{xcr}I + (n_b - m_b)B.
+\end{align*}
+$$
+
+However, we must verify the units of the differential equations. All three presented equations describe population size changes with respect to time. As such, we expect each equation to have units of $\frac{\text{ population}}{\text{day}}$ for $\frac{dS}{dt}$ and $\frac{dI}{dt}$ and $\frac{\text{cells}}{\text{ml} \cdot \text{day}}$, since $\text{day}$ is our measured unit of time. Let us go through each differential equation below and confirm the units match:  
+
+$$
+\begin{align*}
+  \Bigg[ \, \frac{dS}{dt} \, \Bigg] = \frac{\text{population}}{\text{day}}  &\stackrel{?}{=} \Bigg[ - c \frac{B}{k_{50} + B} S \, \Bigg], \\
+  &\stackrel{?}{=} \frac{1}{\text{day}} \cdot \frac{ \frac{\text{cells}}{\text{ml}}}{\frac{\text{cells}}{\text{ml}}}  \cdot \text{population},  \\
+  \frac{\text{population}}{\text{day}} &= \frac{\text{population}}{\text{day}}, \\
+  
+  \\
+  \hline
+  \\
+  
+  \Bigg[ \, \frac{dI}{dt} \, \Bigg] = \frac{\text{population}}{\text{day}} &\stackrel{?}{=} \Bigg[ \, c \frac{B}{k_{50} + B} S - \gamma I \, \Bigg], \\
+  &\stackrel{?}{=} \frac{1}{\text{day}} \cdot \frac{ \frac{\text{cells}}{\text{ml} }}{\frac{\text{cells}}{\text{ml} }}  \cdot \text{population} - \frac{1}{\text{day}} \cdot \text{population} , \\
+  \frac{\text{population}}{\text{day}} &= \frac{\text{population}}{\text{day}}, \\
+
+  \\
+  \hline
+  \\
+  
+  \Bigg[ \, \frac{dB}{dt} \, \Bigg] = \frac{\text{cells}}{\text{ml} \cdot \text{day}} &\stackrel{?}{=} \Bigg[ \, e_{xcr}I + (n_b - m_b)B \, \Bigg] , \\
+  &\stackrel{?}{=} \frac{\text{cells}}{\text{ml} \cdot \text{day} \cdot \text{person}} \cdot \text{population} + \frac{1}{\text{day}} \cdot \frac{ \text{cells}}{\text{ml}}, \\
+  \frac{\text{cells}}{\text{ml} \cdot \text{day}}&= \frac{\text{cells}}{\text{ml} \cdot \text{day}}.
+\end{align*}
+$$
+
+Besides the fact that $\text{person}$ must cancel with $\text{population}$ (not intuitive) for the units on the third differential equation to work out, all the units are as expected!  
+
+
+## Cholera Numerical Solution and Discussion
+Using the differential equations from the previous section, we will reproduce Figure 5.5 from the book in which the numerical solutions for the infected and bacteria populations are presented. To stay within our time constraint of two years, we will observe the population curves up to day 300 ($0 \leq t \leq 300$). The values used are presented in Table 1 and can be seen in the $R$ code presented below.  
+
+<table style="margin-left: auto; margin-right: auto; border: 1px solid black;">
+  <tr style="border: 1px solid black;">
+    <th style="border: 1px solid black; width: 150px; padding:5px;">Constant</th>
+    <th style="border: 1px solid black; width: 150px; padding:5px;">Value</th>
+  </tr>
+  <tr style="border: 1px solid black;">
+    <td style="border: 1px solid black; width: 150px; padding:5px;">$c$</td>
+    <td style="border: 1px solid black; width: 150px; padding:5px;">1 $\frac{1}{\text{day}}$</td>
+  </tr>
+  <tr style="border: 1px solid black;">
+    <td style="border: 1px solid black; width: 150px; padding:5px;">$k_{50}$</td>
+    <td style="border: 1px solid black; width: 150px; padding:5px;">1000000 $\frac{\text{cells}}{\text{ml}}$</td>
+  </tr>
+  <tr style="border: 1px solid black;">
+    <td style="border: 1px solid black; width: 150px; padding:5px;">$\gamma$</td>
+    <td style="border: 1px solid black; width: 150px; padding:5px;">0.2 $\frac{1}{\text{day}}$</td>
+  </tr>
+  <tr style="border: 1px solid black;">
+    <td style="border: 1px solid black; width: 150px; padding:5px;">$e_{xcr}$</td>
+    <td style="border: 1px solid black; width: 150px; padding:5px;">10 $\frac{\text{cells}}{\text{ml day person}}$</td>
+  </tr>
+  <tr style="border: 1px solid black;">
+    <td style="border: 1px solid black; width: 150px; padding:5px;">$(n_b - m_b)$</td>
+    <td style="border: 1px solid black; width: 150px; padding:5px;">-0.33 $\frac{1}{\text{day}}$</td>
+  </tr>
+</table>
+<figcaption style="text-align:center;">**Table 1:** Constants used in R Code</figcaption>
+
+
+
+<figcaption style="text-align:left;">**R Code for Cholera**</figcaption>
+```{r}
+graph55 <- function(t_max) {
+  # Define the RK4 constants
+  N <- 10000;
+  t_min <- 0;
+  t_max <- t_max;
+  h <- (t_max - t_min) / N;
+  
+  # Define the equation constants
+  c <- 1; # day^-1
+  k50 <- 1000000; # cells / ml
+  gamma <- 0.2; # day^-1
+  exr <- 10; # cells / (ml day person)
+  nm <- -0.33; # day^-1
+  
+  # Define the diff eqs
+  Sp <- function(B, S) {
+    -1*c*( B / (k50+B) )*S;
+  }
+  
+  Ip <- function(B, S, I) {
+    c*( B / (k50+B) )*S - gamma*I;
+  }
+  
+  Bp <- function(B, I) {
+    exr*I + nm*B;
+  }
+  
+  # Define the arrays for the values of the functions
+  S <- rep(0, N);
+  I <- rep(0, N);
+  B <- rep(0, N);
+  t <- rep(0, N);
+  
+  # Set up initial values
+  S[1] <- 10000;
+  I[1] <- 1;
+  B[1] <- 0;
+  t[1] = t_min;
+  
+  # Runge-Kutta for each diff eq
+  for(i in 1:N) {
+    # dS/dt
+    a1 <- h*Sp(B[i], S[i]);
+    b1 <- h*Sp(B[i] + 0.5*a1, S[i] + 0.5*a1);
+    c1 <- h*Sp(B[i] + 0.5*b1, S[i] + 0.5*b1)
+    d1 <- h*Sp(B[i] + c1, S[i] + c1);
+    S[i+1] <- S[i]+(1/6)*(a1+2*b1+2*c1+d1); # Next S value
+
+    
+    # dI/dt
+    a2 <- h*Ip(B[i], S[i], I[i]);
+    b2 <- h*Ip(B[i] + 0.5*a2, S[i] + 0.5*a2, I[i] + 0.5*a2);
+    c2 <- h*Ip(B[i] + 0.5*b2, S[i] + 0.5*b2, I[i] + 0.5*a2);
+    d2 <- h*Ip(B[i] + c2, S[i] + c2, I[i] + c2);
+    I[i+1] <- I[i]+(1/6)*(a2+2*b2+2*c2+d2); # Next I value
+    
+    # dB/dt
+    a3 <- h*Bp(B[i], I[i]);
+    b3 <- h*Bp(B[i] + 0.5*a3, I[i] + 0.5*a3);
+    c3 <- h*Bp(B[i] + 0.5*b3, I[i] + 0.5*b3)
+    d3 <- h*Bp(B[i] + c3, I[i] + c3);
+    B[i+1] <- B[i]+(1/6)*(a3+2*b3+2*c3+d3); # Next B value
+    
+    # Update the time step
+    t[i+1] <- t[1] + h*i;
+  }
+  
+  plot(t, I,
+        main = "Cholera Infected Population",
+        xlab = "t (days)",           #x-axis label
+        ylab = "Population I(t)",      #y-axis label
+        type="l",
+        col="blue", 
+        xlim=c(t_min, t_max),                  #x-axis range
+        ylim=c(0, 750)                #y-axis range
+       )
+  cat("Max infected pop reached on day", floor(t[which.max(I)]), "\n" );
+  
+  plot(t, B,
+        main = "Cholera Cell Population",
+        xlab = "t (days)",           #x-axis label
+        ylab = "Population B(t)",      #y-axis label
+        type="l",
+        col="blue", 
+        xlim=c(t_min, t_max),                  #x-axis range
+        ylim=c(0, 17500)                #y-axis range
+       )
+  cat("Max bacteria count reached on day", floor(t[which.max(B)]), "\n" );
+
+}
+
+graph55(300)
+```
+
+The graphs presented here clearly show rises in both the infected and bacteria populations, followed by decreases in population sizes. One notable observation is that our model predicts that, under these circumstances, there will be a peak in the infected population on day 130, whereas the bacteria count with reach its maximum on day 133. This is an expected result because, since infected individuals contribute to the cell population, the bacteria population curve will be out of phase by a few days. 
+
+While this model is helpful in predicting Cholera outbreaks under heavy constraints, it would be more useful to extend this model further by addressing some of the assumptions made at this beginning of this work. This is the topic of the next section.    
+
+## Model Extensions  
+This section is focused on using the Cholera model from the previous section and extending with specific characteristics that improve the model's usability.  
+
+### Waning Immunity and Endemic Cholera  
+## Waning Immunity
+While the second assumption we use when defining the Cholera model dictates that immunity lasts forever, this simply isn't true. In reality, we see that individuals maintain immunity for a period up to 2 years before becoming susceptible to the disease once again. To account for this fact in our model, we will care to add an additional differential equation to describe the recovered population -- represented by $R(t)$ -- and a replenishment term to the susceptibles equation. Initially, as before, we will ignore births and deaths for the sake of simplicity. Additionally, we omit the bacteria population.  
+
+Starting with word-equation additions, we have  
+
+$$
+\begin{align*}
+  \frac{dS}{dt} &= - c \frac{B}{k_{50} + B} S + 
+  \begin{Bmatrix}
+    \mathrm{rate \, of} \\
+    \mathrm{removal \, from \, recovered} \\
+    \mathrm{to \, susceptible \, population} \\
+  \end{Bmatrix}
+  , \\
+  \frac{dI}{dt} &= c \frac{B}{k_{50} + B} S - \gamma I, \\
+  \frac{dR}{dt} &= 
+  \begin{Bmatrix}
+    \mathrm{rate \, of} \\
+    \mathrm{recovery} \\
+  \end{Bmatrix}
+  -
+  \begin{Bmatrix}
+    \mathrm{rate \, of} \\
+    \mathrm{removal \, from \, recovered} \\
+    \mathrm{to \, susceptible \, population} \\
+  \end{Bmatrix}
+  . \\
+\end{align*}
+$$
+
+We know that the $\begin{Bmatrix}\mathrm{rate \, of} \\\mathrm{recovery} \\\end{Bmatrix} = \gamma I$ since that is the corresponding term in the differential equation for the infected population. Let us say this transition of an individual from recovered to susceptible occurs after $\omega$ days. Then, those introduced to the recovered population $\frac{1}{\omega}$ days ago will now become susceptible. 
+
+Let's analyze the units of the third differential equation. We know that $\frac{dR}{dt} = \frac{\text{population}}{\text{day}}$, therefore all the other terms in the differential equation must have the same units. We see that   
+
+$$
+\begin{align*}
+
+  \Big[ \, \gamma I \, \Big] &= \frac{1}{\text{day}} \cdot \text{population} = \frac{\text{population}}{\text{day}}, \\
+  \Big[ \, \omega R \, \Big] &= \frac{1}{\text{day}} \cdot \text{population} = \frac{\text{population}}{\text{day}}.
+
+\end{align*}
+$$
+
+Now, having verified the units for the recovery population differential equation, we have that  
+
+$$
+\begin{align*}
+  \frac{dS}{dt} &= - c \frac{B}{k_{50} + B} S + R(t - \omega), \\
+  \frac{dI}{dt} &= c \frac{B}{k_{50} + B} S - \gamma I, \\
+  \frac{dR}{dt} &= \gamma I- \omega R. \\
+\end{align*}
+$$
+
+Next, let us account for births and deaths with the same per capita rate $a$ ($a_{births} = a_{deaths}$). While we would normally expect to introduce new members of the population only into the susceptible population, in the case of Cholera, we see that recovered individuals pass on the recovered trait to their offspring [3], and likewise for infected individuals [6]. We assume these recovered offspring also share the waning immunity trait and that the infected offspring share the same mortality and recovery rates, which is not an accurate assumption. Integrating these birth/death rates into the differential equations, we are left with  
+
+$$
+\begin{align*}
+  \frac{dS}{dt} &= - c \frac{B}{k_{50} + B} S + R(t - \omega) + a_{birth} S - a_{death} S, \\
+  \frac{dI}{dt} &= c \frac{B}{k_{50} + B} S - \gamma I + a_{birth} I - a_{death} I, \\
+  \frac{dR}{dt} &= \gamma I- \omega R + a_{birth} R - a_{death} R. \\
+\end{align*}
+$$
+
+If all individuals born were introduced into the susceptible population, we would end up with  
+
+$$
+\begin{align*}
+  \frac{dS}{dt} &= - c \frac{B}{k_{50} + B} S + R(t - \omega) + a_{birth} N - a_{death} S, \\
+  \frac{dI}{dt} &= c \frac{B}{k_{50} + B} S - \gamma I - a_{death} I, \\
+  \frac{dR}{dt} &= \gamma I- \omega R - a_{death} R, \\
+\end{align*}
+$$
+
+where the total population $N = S+I+R$. However, this model is less realistic as a consequence.  
+
+### Endemic Cholera
+Now that we have accounted for the reintroduction of individuals from the recovered population to the susceptible population, and accounted for birth and death rates, we can model endemic cholera. Endemic cholera is when several cholera outbreaks occur within a given population over many years. Let's modify our **R Code for Cholera** example from earlier to show how Cholera will be reintroduced. (Note that the presented numerical solution does not account for birth and death rates since 1) the population size is constant and 2) taking into account birth/death rates won't improve the practicality of the model since individuals may be born within all populations. For simplicity, this aspect is not modeled).  
+
+<figcaption style="text-align:left;">**R Code**</figcaption>
+```{r}
+
+graphEndemicCholera <- function(t_max) {
+  # Define the RK4 constants
+  N <- 1000000;
+  t_min <- 0;
+  t_max <- t_max;
+  h <- (t_max - t_min) / N;
+  
+  # Define the equation constants
+  c <- 1; # day^-1
+  k50 <- 1000000; # cells / ml
+  gamma <- 0.2; # day^-1
+  exr <- 10; # cells / (ml day person)
+  nm <- -0.33; # day^-1
+  omega <- 1/(365*2); # years in days
+  
+  # Define the diff eqs
+  Sp <- function(B, S, R) {
+    -1*c*( B / (k50+B) )*S + omega*R;
+  }
+  
+  Ip <- function(B, S, I) {
+    c*( B / (k50+B) )*S - gamma*I;
+  }
+  
+  Rp <- function(I, R) {
+    gamma*I - omega*R;
+  }
+  
+  Bp <- function(B, I) {
+    exr*I + nm*B;
+  }
+  
+  # Define the arrays for the values of the functions
+  S <- rep(0, N);
+  I <- rep(0, N);
+  R <- rep(0, N);
+  B <- rep(0, N);
+  t <- rep(0, N);
+  
+  # Set up initial values
+  S[1] <- 10000;
+  I[1] <- 1;
+  R[1] <- 0;
+  B[1] <- 0;
+  t[1] = t_min;
+  
+  diverted <- 0;
+  
+  # Runge-Kutta for each diff eq
+  for(i in 1:N) {
+    # dS/dt
+    a1 <- h*Sp(B[i], S[i], R[i]);
+    b1 <- h*Sp(B[i] + 0.5*a1, S[i] + 0.5*a1, R[i] + 0.5*a1);
+    c1 <- h*Sp(B[i] + 0.5*b1, S[i] + 0.5*b1, R[i] + 0.5*b1)
+    d1 <- h*Sp(B[i] + c1, S[i] + c1, R[i] + c1);
+    S[i+1] <- S[i]+(1/6)*(a1+2*b1+2*c1+d1); # Next S value
+    
+    # dI/dt
+    a2 <- h*Ip(B[i], S[i], I[i]);
+    b2 <- h*Ip(B[i] + 0.5*a2, S[i] + 0.5*a2, I[i] + 0.5*a2);
+    c2 <- h*Ip(B[i] + 0.5*b2, S[i] + 0.5*b2, I[i] + 0.5*b2);
+    d2 <- h*Ip(B[i] + c2, S[i] + c2, I[i] + c2);
+    I[i+1] <- I[i]+(1/6)*(a2+2*b2+2*c2+d2); # Next I value
+      
+    # dR/dt
+    a2 <- h*Rp(I[i], R[i]);
+    b2 <- h*Rp(I[i] + 0.5*a2, R[i] + 0.5*a2);
+    c2 <- h*Rp(I[i] + 0.5*b2, R[i] + 0.5*b2);
+    d2 <- h*Rp(I[i] + c2, R[i] + c2);
+    R[i+1] <- R[i]+(1/6)*(a2+2*b2+2*c2+d2); # Next I value
+
+    # dB/dt
+    a4 <- h*Bp(B[i], I[i]);
+    b4 <- h*Bp(B[i] + 0.5*a4, I[i] + 0.5*a4);
+    c4 <- h*Bp(B[i] + 0.5*b4, I[i] + 0.5*b4)
+    d4 <- h*Bp(B[i] + c4, I[i] + c4);
+    B[i+1] <- B[i]+(1/6)*(a4+2*b4+2*c4+d4); # Next B value
+    
+    # Update the time step
+    t[i+1] <- t[1] + h*i;
+  }
+  
+  plot(t, S,
+        main = "Cholera Susceptible Population",
+        xlab = "t (days)",           #x-axis label
+        ylab = "Population S(t)",      #y-axis label
+        type="l",
+        col="blue", 
+        xlim=c(t_min, t_max),                  #x-axis range
+        ylim=c(0, S[1])                #y-axis range
+       )
+  
+  plot(t, I,
+        main = "Cholera Infected Population",
+        xlab = "t (days)",           #x-axis label
+        ylab = "Population I(t)",      #y-axis label
+        type="l",
+        col="blue", 
+        xlim=c(t_min, t_max),                  #x-axis range
+        ylim=c(0, 750)                #y-axis range
+       )
+  cat("Max infected pop reached on day", floor(t[which.max(I)]), "\n" );
+  
+  plot(t, R,
+        main = "Cholera Recovered Population",
+        xlab = "t (days)",           #x-axis label
+        ylab = "Population R(t)",      #y-axis label
+        type="l",
+        col="blue", 
+        xlim=c(t_min, t_max),                  #x-axis range
+        ylim=c(0, S[1])                #y-axis range
+       )
+}
+
+graphEndemicCholera(5000)
+
+```
+
+
+An interesting observation from the numerical solution presented here for Endemic Cholera is that we never have to manually reintroduce Cholera into the community. The disease seemingly remains within the population at extremely low numbers until the susceptible population is large enough for the disease to spread further.  
+
+
+### Multi-stage Infections
+
+Many infectious diseases include multiple stages in which an individual may be contagious, or there is a period in which a disease is latent within an infected individual (incubation period). As it turns out, the models for both of these settings are similar. Let us extend our model further by taking into account Cholera's incubation period. The modified differential equations are  
+
+$$
+\begin{align*}
+
+  \frac{dS}{dt} &= - c \frac{B}{k_{50} + B} S + \omega_r R, \\
+  \frac{dI_{inc}}{dt} &= c \frac{B}{k_{50} + B} S - \omega_i I_{inc}, \\
+  \frac{dI_{inf}}{dt} &= \omega_i I_{inc} - \gamma I_{inf}, \\
+  \frac{dB}{dt} &= e_{xcr}I_{inf} + (n_b - m_b)B, \\
+  \frac{dR}{dt} &= \gamma I_{inf} - \omega_r R,
+
+\end{align*}
+$$
+
+where $\omega_r$ and $\omega_i$ are the inverse of the recovery and incubation periods, respectively. Since Cholera's incubation period ranges from 12 hours to 5 days [5], we will use $\omega_r = \frac{1}{2.75 \, \text{days}}$ (the average between the two). Note that in the cell concentration differential equation, the resupply term ($e_{xcr}I_{inf}$) only takes into account the population of infected individuals, not those incubating. If this were to instead take into about the population of $I_{inc}$ as well, then the model will behave exactly as before. Now, let's look at the results for the numerical solution for this multi-stage model.  
+
+```{r}
+
+graphIncubationCholera <- function(t_max) {
+  # Define the RK4 constants
+  N <- 100000;
+  t_min <- 0;
+  t_max <- t_max;
+  h <- (t_max - t_min) / N;
+  
+  # Define the equation constants
+  c <- 1; # day^-1
+  k50 <- 1000000; # cells / ml
+  gamma <- 0.2; # day^-1
+  exr <- 10; # cells / (ml day person)
+  nm <- -0.33; # day^-1
+  omega_r <- 1/(365*2); # years in days
+  omega_i <- 1/2.75; # days
+  
+  # Define the diff eqs
+  Sp <- function(B, S, R) {
+    -1*c*( B / (k50+B) )*S + omega_r*R;
+  }
+  
+  I_incp <- function(B, S, I_inc) {
+    c*( B / (k50+B) )*S - omega_i*I_inc;
+  }
+  
+  I_infp <- function(I_inc, I_inf ) {
+    omega_i*I_inc - gamma*I_inf;
+  }
+  
+  Rp <- function(I_inf, R) {
+    gamma*I_inf - omega_r*R;
+  }
+  
+  Bp <- function(B, I_inf) {
+    exr*I_inf + nm*B;
+  }
+  
+  # Define the arrays for the values of the functions
+  S <- rep(0, N);
+  I_inc <- rep(0, N);
+  I_inf <- rep(0, N);
+  R <- rep(0, N);
+  B <- rep(0, N);
+  t <- rep(0, N);
+  
+  # Set up initial values
+  S[1] <- 10000;
+  I_inc[1] <- 0;
+  I_inf[1] <- 1;
+  R[1] <- 0;
+  B[1] <- 0;
+  t[1] = t_min;
+  
+  diverted <- 0;
+  
+  # Runge-Kutta for each diff eq
+  for(i in 1:N) {
+    # dS/dt
+    a1 <- h*Sp(B[i], S[i], R[i]);
+    b1 <- h*Sp(B[i] + 0.5*a1, S[i] + 0.5*a1, R[i] + 0.5*a1);
+    c1 <- h*Sp(B[i] + 0.5*b1, S[i] + 0.5*b1, R[i] + 0.5*b1)
+    d1 <- h*Sp(B[i] + c1, S[i] + c1, R[i] + c1);
+    S[i+1] <- S[i]+(1/6)*(a1+2*b1+2*c1+d1); # Next S value
+    
+    # dI_inc/dt
+    a2 <- h*I_incp(B[i], S[i], I_inc[i]);
+    b2 <- h*I_incp(B[i] + 0.5*a2, S[i] + 0.5*a2, I_inc[i] + 0.5*a2);
+    c2 <- h*I_incp(B[i] + 0.5*b2, S[i] + 0.5*b2, I_inc[i] + 0.5*b2);
+    d2 <- h*I_incp(B[i] + c2, S[i] + c2, I_inc[i] + c2);
+    I_inc[i+1] <- I_inc[i]+(1/6)*(a2+2*b2+2*c2+d2); # Next I_inc value
+      
+    # dI_inf/dt
+    a3 <- h*I_infp(I_inc[i], I_inf[i]);
+    b3 <- h*I_infp(I_inc[i] + 0.5*a3, I_inf[i] + 0.5*a3);
+    c3 <- h*I_infp(I_inc[i] + 0.5*b3, I_inf[i] + 0.5*b3);
+    d3 <- h*I_infp(I_inc[i] + c3, I_inf[i] + c3);
+    I_inf[i+1] <- I_inf[i]+(1/6)*(a3+2*b3+2*c3+d3); # Next I_inf value
+    
+    # dR/dt
+    a2 <- h*Rp(I_inf[i], R[i]);
+    b2 <- h*Rp(I_inf[i] + 0.5*a2, R[i] + 0.5*a2);
+    c2 <- h*Rp(I_inf[i] + 0.5*b2, R[i] + 0.5*b2);
+    d2 <- h*Rp(I_inf[i] + c2, R[i] + c2);
+    R[i+1] <- R[i]+(1/6)*(a2+2*b2+2*c2+d2); # Next I value
+
+    # dB/dt
+    a4 <- h*Bp(B[i], I_inf[i]);
+    b4 <- h*Bp(B[i] + 0.5*a4, I_inf[i] + 0.5*a4);
+    c4 <- h*Bp(B[i] + 0.5*b4, I_inf[i] + 0.5*b4)
+    d4 <- h*Bp(B[i] + c4, I_inf[i] + c4);
+    B[i+1] <- B[i]+(1/6)*(a4+2*b4+2*c4+d4); # Next B value
+    
+    # Update the time step
+    t[i+1] <- t[1] + h*i;
+  }
+  
+  plot(t, I_inc,
+        main = "Cholera Infected Populations",
+        xlab = "t (days)",           #x-axis label
+        ylab = "Population Size",      #y-axis label
+        type="l",
+        col="blue", 
+        xlim=c(t_min, t_max),                  #x-axis range
+        ylim=c(0, 750)                #y-axis range
+       )
+  lines(t, I_inf);
+  
+  # Add a point at the maximum value of the incubation and infectious curves
+  t_coord = t[which.max(I_inc)];
+  pop_coord = max(I_inc);
+  points(t_coord, pop_coord);
+  #abline(v=t_coord);
+  segments(t_coord, 0, t_coord, pop_coord, lty=2);
+  
+  t_coord = t[which.max(I_inf)];
+  pop_coord = max(I_inf);
+  points(t_coord, pop_coord);
+  #abline(v=t_coord);
+  segments(t_coord, 0, t_coord, pop_coord, lty=2);
+    
+  
+  legend("topright",
+         legend = c("incubation", "infectious"), #Vector of legend items
+         col = c("blue", "black"),  #vector of colors for legend items
+         lty = c(1, 1),            #Vector of line types for legend items
+         lwd=3)
+    
+  cat("Max incubating-infected pop reached on day", floor(t[which.max(I_inc)]), "\n" );
+  
+  cat("Max infectious-infected pop reached on day", floor(t[which.max(I_inf)]), "\n" );
+  
+  cat("Max bacteria count reached on day", floor(t[which.max(B)]), "\n" );
+}
+
+graphIncubationCholera(300)
+
+```
+
+As expected, there is a delay between the maximum values in the incubation and infectious populations. Also of note is that the delay from the infectious maximum and cell concentrations is unchanged. However, while we may expect the incubation-infectious delay to be around 2-3 days, we see that it is actually 5 days! This *may* be a consequence of the recovery rate removing individuals from the infectious group, thus shifting the maximum by a couple more days (the recovery rate, $\gamma$ is $0.2 \frac{1}{\text{day}}$, thus individuals recover in 5 days. Another simple observation is that, while we expect that all infectious individuals have to be part of the incubation group at some point, we see a substantial difference between the heights of the two curves.  
+
+An additional note is that we start the model with one infectious individual. If instead the model is initialized with one incubating individual, we see all the maximum values (all the curves) are shifted in time by +2 days (incubating max: day 188, infectious max: day 193, and cell max: day 196). This result is expected since the only difference has been adding this two-day buffer before infections begin.
+
+
+## References
+ [1] https://www.cdc.gov/cholera/index.html    
+ [2] https://www.cdc.gov/cholera/haiti/index.html  
+ [3] https://www.who.int/news-room/fact-sheets/detail/cholera    
+ [4] https://www.mayoclinic.org/diseases-conditions/cholera/symptoms-causes/syc-20355287  
+ [5] https://pubmed.ncbi.nlm.nih.gov/23201968/  
+ [6] https://sites.unicef.org/cholera/Chapter_8_case_management/11_IAWG_Cholera_in_pregnancy_Haiti.pdf  
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,143 @@
+---
+title: "Ch9.5 Activity: Solving 2nd Order ODEs"
+output:
+  html_document: default
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Clayton Johnson
+- Use R Studio to open this Rmd document from K drive Share folder. 
+- Fill in your name above. 
+- Save this Rmd file to your student K drive folder for this class. 
+
+
+### Whiffle Ball 
+
+The position $y$ of a whiffle ball shot vertically upwards from ground level satisfies 
+
+$$ y'' + \frac{c}{m} y' = - g, \,\,\, y(0) = 0, \,\, y'(0) = v_0.  $$
+
+Here, $c$ is the damping constant (grams/sec), $m$ is the mass (grams), and $g$ the gravitational acceleration value.  We will take $c/m = 3/sec, \,  g = 9.8 m/sec^2, \, y_0 = 0$. Also, observe that $y$ gives vertical position and $v = y'$ gives velocity. 
+
+Using this whiffle ball description, address the following problems. 
+
+
+#### Problem 1
+
+Note that the whiffle ball differential equation is a second order IVP.  In order to use RK4, we need to convert this single second order IVP into a system of two first order IVPs involving $y$ and $v$, where $v = y'$.  (Hint: Review the last few slides of the Ch9.5 Slides in the Week 7 folder of D2L.)  Write this system of equations in the space below using LaTeX.  
+
+##### Solution
+
+$$ \begin{aligned}
+  y' &= v, \\
+  v' &= - \frac{c}{m}v - g. \\
+\end{aligned}
+$$
+
+#### Problem 2
+
+In the space below, adapt and complete the RK4 program below that numerically solves the whiffle ball IVP and plots the solution over the time interval $[0, 2.5]$ for variable $v_0$. 
+
+
+##### Solution 
+
+
+```{r}
+Ch95whiffle <- function(v0) {
+
+  #v0 is the initial velocity
+  N <- 1000   #N is the number of time nodes
+  T <- 2.5
+  h <- T/N    #This is the time step size in seconds
+  
+  #System Parameters
+  t0 <- 0    # s
+  y0 <- 0    # m
+  g <-  9.81 # m / s^2
+  c <-  3    # g / s
+  m <-  1    # g
+   
+
+  #Slope functions for ODEs
+  f1 <-  #### Your code here  ####      
+  f2 <-  #### Your code here  ####    
+ 
+  #Initialize vectors for time t and temperature U. 
+  t <- rep(0, N)   #Vector of N zeros (0 repeated N times)
+  y1 <- rep(0, N)   #Vector of N zeros (0 repeated N times)
+  y2 <- rep(0, N)   #Vector of N zeros (0 repeated N times)
+  t[1] <- t0       #Initial time t0
+  y[1] <- y0       
+  v[1] <- v0       
+
+  
+  #Runge-Kutta Loop (Generate temperature vectors U1 & U2)
+  for(i in 1:N) {
+    a1 <-  #### Your code here  ####                       #f1 = slope of y
+    a2 <-   #### Your code here  ####                      #f2 = slope of v
+    #### Your code here  ####
+    #### Your code here  ####
+    #### More lines of code here ####
+    y[i+1] <- y[i]+(1/6)*(a1+2*b1+2*c1+d1); #Next y value
+    v[i+1] <- v[i]+(1/6)*(a2+2*b2+2*c2+d2); #Next v value
+    t[i+1] <- t[i] + h                      #Next t value
+    }
+  
+  #Plot results
+  plot(t,y,                
+        main = "Vertical Distance",
+        xlab = "t (seconds)",            
+        ylab = "Height of Whiffle Ball (m)",     
+        type = "l",col="blue",    #Line type and color
+        xlim = c(0,T),  #x-axis range vector: c(0,T) = [0,T] 
+        ylim = c(-4,6)  #y-axis range vector: c = "combine"
+       )
+  
+  lines(t,v, type="l",col="red")        
+  
+  legend("topright",
+         legend = c("Height", "Velocity"), #Vector of legend items
+         col = c("blue","red"),  #vector of colors for legend items
+         lty = c(1,1)            #Vector of line types for legend items
+         )
+}
+```
+#### Problem 3
+
+Graph the numerical solution for $v_0 = 15 \, m/sec$ by typing in the appropriate R command. 
+
+##### Solution 
+
+```{r}
+####  Your command here for implementing code at v0 = 15.  ####
+```
+
+#### Problem 4
+
+Now produce graphs for $v_0 = 5, 10$ and $20 \, m/sec$ by typing in the appropriate R commands. 
+
+
+##### Solution 
+
+```{r}
+####  Your commands here.  ####
+```
+
+#### Problem 5
+
+Discussion questions:
+
+- How long until the whiffle ball hits the ground in each case?  
+- What is the maximum vertical height of the whiffle ball in each case?  
+- Does it take longer for the whiffle ball to go up from ground level to the maximum height or return to the ground from maximum height? 
+
+##### Solution 
+
+Write answers here. 
+
+
+

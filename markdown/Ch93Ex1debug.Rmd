@@ -1,0 +1,119 @@
+---
+title: "Ch 9.3 Activity"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Ch9.3 Hot Water Heater: Debugging the Code
+
+In this activity, we run a proposed program for the numerical solution of the ODE in Ch9.3 for the hot water heater.  The code has an error in it, so we will work on debugging strategies. 
+
+#### Firstname Lastname
+
+Be sure to enter your name on this document. 
+
+#### Intro Paragraph from Book
+
+In the paragraph below, a screen shot is included from the book. This is shown for instructional purposes, in order to demonstrate how to interpret the information and parameters given in the book for use within our numerical program.  Note that you should typically **not** use this kind of screen shot for work that you submit for assignments in this class.  Instead, you will format your document in a professional manner using your own typesetting, consistent with directions given for the assignments. 
+
+![](9.3numericalparagraph.jpg)
+The differential equation given by Equation (9.7) on page 231, along with our adaptation for RK4, is shown below. 
+
+$$ \begin{aligned}
+cm \frac{dU}{dt} &= q - hS \left(U - u_s \right) \\
+ \frac{dU}{dt} &= \frac{q}{cm} -  \frac{hS}{cm}\left(U - u_s \right) 
+\end{aligned}
+$$
+
+
+#### RK4 Numerical Solution
+
+Here is the code for the numerical solution.  We will run it, and then try to track down the necessary corrections. 
+
+```{r}
+Ch93Ex1debug <- function(q,T) {
+
+  #Chapter9.3 Model 
+  #Perform Rk4 for temperature of water in hot water heater
+  
+  #q is the heat input of the hot water heater.   
+  #T is the time length in hours for [0, T]
+  N <- 3600*10   #N is the number of time nodes
+  h <- 3600*T/N    #This is the time step size in seconds
+  
+  #System Parameters
+  t0 <- 0
+  u0 <- 15 
+  us <- 15
+  c <- 4200    
+  m <- 250      
+  h <- 12    
+  S <- 3.06    
+  
+  #Slope function from ODE
+  f <- function(U) {q/(c*m) - ((h*S)/(c*m))*(U - us)}  
+ 
+  #Initialize vectors for time t and temperature U. 
+  t <- rep(0, N)
+  U <- rep(0, N)
+  t[1] <- t0
+  U[1] <- u0
+
+  
+  #Runge-Kutta Loop (Generate temperature vector U)
+  for(i in 1:N) {
+    a1 <- h*f(U[i]);                       #f = slope of U
+    b1 <- h*f(U[i]+0.5*a1);                 #Half-step predictor 
+    c1 <- h*f(U[i]+0.5*b1);                 #Half-step predictor 
+    d1 <- h*f(U[i]+c1);                     #Full-step predictor 
+    U[i+1] <- U[i]+(1/6)*(a1+2*b1+2*c1+d1);   #Next U value
+    t[i+1] <- t[i] + h
+    #cat("i = ", i,",", "a = ", a, "\n")
+    #cat("i = ", i,",", "b = ", b, "\n")
+    #cat("i = ", i,",", "c = ", c, "\n")
+    #cat("i = ", i,",", "d = ", d, "\n")
+    #cat("i = ", i,",", "xi = ", U[i], "\n")
+  }
+
+  #Plot results
+  plot(t,U,                
+        main = "Hot Water Heater Temperature",
+        xlab = "t (Seconds)",           #x-axis label
+        ylab = "Temperature (C)",       #y-axis label
+        type="l",col="blue", 
+        xlim=c(0,3600*T),               #x-axis range
+        ylim=c(0,100)                   #y-axis range
+       )
+  
+   legend("topright",
+         legend = c("Temperature"),
+         col=c("blue"),        #legend colors
+         lty=c(1)             #lty = line type (for legend colors)
+         )
+}
+```
+
+####  Commands for Running Numerical Solution
+
+The following commands should produce a graph similar to Figures 9.4 and 9.5  on page 233 of our book; see screen shots below. Is this the case?  
+
+##### Figure 9.4
+
+![Figure 9.4](9.3Fig9.4.jpg)
+
+```{r}
+Ch93Ex1debug(3600,10)
+```
+
+
+##### Figure 9.5
+
+![Figure 9.5](9.3Fig9.5.jpg)
+
+```{r}
+Ch93Ex1debug(500,50)
+```
+

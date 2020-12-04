@@ -1,0 +1,213 @@
+---
+title: "Homework 9"
+output:
+  html_document: default
+  word_document: default
+  pdf_document: default
+---
+[Clayton Johnson]{style="float:right"}  
+[MATH466 - Methods of]{style="float:right"}  
+[Applied Mathematics III]{style="float:right"}    
+
+### 11.7. Internal floor heating.
+Houses are often heated via a heating source located within a concrete slab floor (e.g, by attaching an electrical resistance wire to the reinforcing bars embedded within the concrete). Suppose such a heat source is located in a slab of thickness $d$ and generates heat at a constant rate $q$ (per unit volume). The equilibrium temperature $U(x)$ satisfies the differential equation  
+
+$$
+k \frac{d^2 U}{dx^2} + q = 0,
+$$
+
+where $k$ is the thermal conductivity. If each side of the slab is maintained  at the same temperature $u_0$, find an expression for $U(x)$, the temperature inside the slab.  
+
+Since we have the differential equation (above), we will solve for $U(x)$:  
+
+$$
+\begin{align*}
+  k \frac{d^2 U}{dx^2} + q &= 0, \\
+  \frac{d^2 U}{dx^2} &= - \frac{q}{k}, \\
+  \int d ( dU ) &= \left( \int - \frac{q}{k}dx \right) dx, \\
+  \int dU &= \int \left( - \frac{q}{k}x + C_1 \right)dx, \text{ where } C_1 \text{ is the integration constant, } \\
+  U(x) &= - \frac{q}{2k}x^2 + C_1 x + C_2, \text{ where } C_2 \text{ is the integration constant. } \\
+\end{align*}
+$$
+
+Now that we have the general solution, $U(x)$, we can find our particular solution by using the initial conditions $U(0) = u_0$ and $U(l) = u_0$:  
+
+$$
+\begin{align*}
+  U(0) &= u_0 = - \frac{q}{2k}(0)^2 + C_1 (0) + C_2, \\
+  \text{Thus, } C_2 &= u_0.  \\
+  \\
+  U(l) &= u_0 = - \frac{q}{2k}l^2 + C_1 l + u_0, \\
+  \text{Thus, } C_1 &= \frac{q}{2k}l.
+\end{align*}
+$$
+
+Therefore, plugging in the values found for $C_1$ and $C_2$, we have the final solution  
+
+$$
+U(x) = x \frac{q}{2k} \left[ l - x \right] + u_0.
+$$
+
+
+### 11.12. Cooling lizards.
+Lizards at rest are known to generate heat internally at a rate of $q = 0.5 \frac{\text{W}}{\text{kg}}$. We might model the lizard as a cylinder of radius $a$ and length $l$. The equilibrium temperature satisfies the differential equation  
+
+$$
+\frac{k}{r} \frac{d}{dr} \left( r \frac{dU}{dr} \right) + \rho = 0,
+$$
+
+where $\rho$ is the (average) density of lizard tissue, $k$ is the conductivity, and $r$ measures radial distance from the center of the lizard's body (a cylinder).   
+
+ (a) Starting from a suitable word equation, outline a derivation of this differential equation.  
+ 
+ Starting from a word equation, resembling one presented in Section 9.6, we can derive the differential equation (above).  
+ 
+ $$
+  \begin{equation}
+  \begin{Bmatrix}
+    \mathrm{rate \, of} \\
+    \mathrm{change \, of} \\
+    \mathrm{heat \, in \, lizard} \\
+  \end{Bmatrix}
+  =
+  \begin{Bmatrix}
+    \mathrm{rate \, heat} \\
+    \mathrm{conducted} \\
+    \mathrm{in \, at \,} r \\
+  \end{Bmatrix}
+  - 
+  \begin{Bmatrix}
+    \mathrm{rate \, heat} \\
+    \mathrm{conducted} \\
+    \mathrm{in \, at \,} r + \Delta r \\
+  \end{Bmatrix}
+\end{equation}
+ $$  
+ 
+We define each of the terms in the word equation  
+
+$$
+\begin{align*}
+  \begin{Bmatrix}
+    \mathrm{rate \, of} \\
+    \mathrm{change \, of} \\
+    \mathrm{heat \, in \, lizard} \\
+  \end{Bmatrix}
+   &= -2 \pi (l \times r \times \Delta r) q \rho, \\
+   \begin{Bmatrix}
+    \mathrm{rate \, heat} \\
+    \mathrm{conducted} \\
+    \mathrm{in \, at \,} r \\
+  \end{Bmatrix}
+  &= J(r)A(r), \\
+  \begin{Bmatrix}
+    \mathrm{rate \, heat} \\
+    \mathrm{conducted} \\
+    \mathrm{in \, at \,} r + \Delta r \\
+  \end{Bmatrix}
+  &= J(r+ \Delta r)A(r + \Delta r).
+\end{align*}
+$$
+ 
+ Substituting the terms,
+ 
+$$
+\begin{align*}
+  -2 \pi l r \Delta r q \rho &=  J(r)A(r) - J(r+ \Delta r)A(r + \Delta r), \\
+  -2 \pi l r q \rho &= - \frac{ J(r+ \Delta r)A(r + \Delta r) - J(r)A(r) }{\Delta r}, \\
+  -2 \pi l r q \rho &= - \frac{d}{dr} ( J(r)A(r) ).
+\end{align*}
+$$
+
+Since we have that $A(r) = 2 \pi lr$ and Fourier's law is defined as $J = -k \frac{dU}{dr}$, we can substitute these values in 
+
+$$
+\begin{align*}
+  -2 \pi l r q \rho &= - \frac{d}{dr} \left( -k \frac{dU}{dr} 2 \pi lr  \right), \\
+  -q \rho &= \frac{k}{r} \frac{d}{dr} \left( r \frac{dU}{dr} \right), \\
+  \frac{k}{r} \frac{d}{dr} \left( r \frac{dU}{dr} \right) + q \rho &= 0. \\
+\end{align*}
+$$
+
+
+ 
+ (b) Find the general solution.  
+ 
+ To find the general solution, we must solve for $U(x)$  
+ 
+ $$
+ \begin{align*}
+   \frac{k}{r} \frac{d}{dr} \left( r \frac{dU}{dr} \right) + \rho q &= 0, \\
+   \int d \left( r \frac{dU}{dr} \right) &= - \int \frac{r}{k} q \rho dr = - \frac{q \rho}{k} \int r dr, \\
+   r \frac{dU}{dr} &= - \frac{q \rho}{2k} r^2 + C_1, \text{ where } C_1 \text{ is the integration constant,} \\
+   \int dU &= \int \left( - \frac{q \rho}{2k}r + \frac{C_1}{r} \right)dr. \\
+   \text{Thus,}& \\
+   U(r) &= - \frac{q \rho}{4k}r^2 + C_1 \ln r + C_2, \text{ where } C_2 \text{ is the integration constant.} \\
+ \end{align*}
+ $$
+ 
+ (c) For a solid cylinder (our lizard), we require the equilibrium temperature to be finite at $r=0$. What does this tell you about the value of one of the arbitrary constants?  
+ 
+ Since the equilibrium temperature must be finite at $r=0$, we can look at each of the terms in the general solution to give us a hint as to what the constants are. First, we will begin by graphing the first term, setting the constant coefficient, $\frac{q \rho}{4k}$, to equal 1 for simplicity.  
+
+ 
+```{r}
+curve(
+  -1*x**2,
+  main="X^2 Term of U(x)",
+  xlab = "x",           #x-axis label
+  ylab = "y",       #y-axis label
+  type = "l",col="blue",          #Line type and color
+  xlim = c(-1,1),  #x-axis range vector: c(0,T) = [0,T] 
+  ylim = c(-1, 1 )  #y-axis range vector: c = "combine"
+)
+```
+ 
+We can clearly see by taking the limit as $x$ approaches zero, from either side, that there is a finite value expected at $x=0$. We can confirm this by evaluating $0^2 = 0$, which is finite. Let's move on to the second term, then. Again, we simplify the constant, $C_1$, and only evaluate the $\ln r$ term. 
+ 
+```{r}
+curve(
+  log(x),
+  main="Ln Term of U(x)",
+  xlab = "x",           #x-axis label
+  ylab = "y",       #y-axis label
+  type = "l",col="blue",          #Line type and color
+  xlim = c(-1,10),  #x-axis range vector: c(0,T) = [0,T] 
+  ylim = c(-5, 5 )  #y-axis range vector: c = "combine"
+)
+```
+
+
+By graphing this term, we can see that there is a *hiccup* (technical term). As we approach zero from the right ($x>0$), we are decreasing in value. As it turns out, this decrease intensifies the closer we are to zero. We cannot evaluate the limit from the left side since there is nothing on the left side to approach with. We can confirm these suspicions by evaluating $\ln (0)$ and seeing that it is undefined. Since our model would not be useful to have non-finite terms laying around at zero, we will set the constant $C_1$ to zero to remove the $\ln r$ from the model. Finally, our constant is constant and, as such, is constantly finite.
+  
+ 
+ (d) Suppose heat is lost to the surroundings according to Newton's law of cooling, where the surroundings are at temperature $u_0$. Find an expression for the equilibrium temperature inside the lizard (cylinder). Where is the equilibrium temperature a maximum?
+
+We will use the general solution from above to show that the equilibrium temperature is at a maximum when $r=0$. First, we have the initial condition $U(a) = u_0$, where $a$ is the radius of the lizard. Using, this, we can solve for our constant $C_2$ to obtain a particular solution.
+
+$$
+\begin{align*}
+  U(a) = u_0 &= - \frac{q \rho}{4k}a^2 + C_2, \\
+  C_2 &= u_0 + \frac{q \rho}{4k}a^2. \\
+  \text{Thus, } & \\
+  U(r) &= \frac{q \rho}{4k} \left( a^2 - r^2 \right) + u_0.
+\end{align*}
+$$
+
+Therefore, from our particular solution, we can see that as $r \rightarrow a$, we have a positive first term and that $U(r) \rightarrow u_0$. From these conclusions, we see that $U(0)$ is the maximum equilibrium temperature. This can be confirmed by taking the first derivative of the solution and solving for $r$ when $\frac{dU}{dr} = 0$. This is shown below.  
+
+$$
+\begin{align*}
+U(r) &= \frac{q \rho}{4k} \left( a^2 - r^2 \right) + u_0, \\
+\frac{dU}{dr} = 0 &= \frac{d}{dr} \left( \frac{q \rho}{4k} \left( a^2 - r^2 \right) + u_0 \right), \\
+0 &= \frac{q \rho}{4k} \frac{d}{dr} \left( a^2 - r^2 \right), \\
+0 &= -2r, \\
+r &= 0.
+\end{align*}
+$$
+
+
+
+
+
+

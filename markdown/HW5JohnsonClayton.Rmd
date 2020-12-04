@@ -1,0 +1,248 @@
+---
+title: "Math 466 HW5 Directions & Guide"
+output:
+  html_document: default
+  pdf_document: default
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### HW5: Clayton Johnson
+
+
+#### 10.1. Coffee cooling
+Imagine you have a cup of coffee cooling according to the natural law of cooling, so that the temperature $U(t)$ satisfies  
+$$
+\frac{dU}{dt} = -\lambda(U-u_s)^{\frac{5}{4}},
+$$
+where $\lambda$ is a positive constant and $u_s = 20\text{ } ^{\circ}\text{C}$ is the temperature of the surroundings.    
+
+ (a) Assuming $U(0) = u_0$, separate the variables to obtain  
+ $$
+ \lambda t = 4 \left[ (U-u_s)^{-\frac{1}{4}} - (u_0 - u_s)^{-\frac{1}{4}} \right].
+ $$
+
+  First, let's start with our differential equation,  
+  $$
+\frac{dU}{dt} = -\lambda(U-u_s)^{\frac{5}{4}},
+  $$
+  and use the separation of variables technique to find the solution:  
+  $$
+  \begin{align*}
+  \int \frac{dU}{(U-u_s)^{\frac{5}{4}}} &= -\lambda \int t dt, \\
+  -4 (U - u_s)^{-\frac{1}{4}} &= -\lambda t + C \text{, where $C$ is the integration constant.}
+  \end{align*}
+  $$
+  Since we know the initial condition $U(0) = u_0$ (note that the function $U$ is a function of time $t$), then,
+  $$
+    C = -4(u_0 - u_s)^{-\frac{1}{4}}.
+  $$
+  Substituting in $C$ and solving for $\lambda t$, 
+  
+  $$
+  \begin{align*}
+  - 4(U - u_s)^{-\frac{1}{4}} &= -\lambda t - 4(u_0 - u_s)^{-\frac{1}{4}}, \\
+  \therefore \lambda t &= 4 \left[ (U - u_s)^{-\frac{1}{4}} - (u_0 - u_s)^{-\frac{1}{4}} \right].
+  \end{align*}
+  $$
+
+  (b) If the cup of coffee cools from an initial temperature $u_0 = 60 \text{ }^{\circ}\text{C}$ to $50 \text{ }^{\circ}\text{C}$ in 10 minutes, obtain $\lambda$ and hence find the time it takes for the cup of coffee to cool to $40 \text{ }^{\circ}\text{C}$.  
+  
+  First, we will find $\lambda$, then we will solve for the time at which the temperature is $40 \text{ }^{\circ}\text{C}$, $t_{40}$. To solve for $\lambda$, we use the equation found in the previous section:  
+  $$
+  \lambda = \frac{4 \left[ (U - u_s)^{-\frac{1}{4}} - (u_0 - u_s)^{-\frac{1}{4}} \right]}{t}.
+  $$
+  Since we know that $U(t=10\text{ min}) = 50\text{ }^{\circ}\text{C, }u_0 = 60\text{ }^{\circ}\text{C, and } u_s = 20\text{ }^{\circ}\text{C}$, we can find the value of $\lambda$:
+  $$
+  \begin{align*}
+  \lambda &= \frac{4 \left[ (50\text{ }^{\circ}\text{C} - 20\text{ }^{\circ}\text{C})^{-\frac{1}{4}} - (60\text{ }^{\circ}\text{C} - 20\text{ }^{\circ}\text{C})^{-\frac{1}{4}} \right]}{ 10 \text{ min}}, \\
+  \lambda &\approx 0.01186 \text{ min}^{-1}.
+  \end{align*}
+  $$ 
+  
+  Now, with $\lambda$, we can solve for the time it takes for the temperature to drop to $40\text{ }^{\circ}\text{C}$. Rearranging the previous equation, we solve for $t_{40}$:
+  $$
+    t_{40} = \frac{4 \left[ (U - u_s)^{-\frac{1}{4}} - (u_0 - u_s)^{-\frac{1}{4}} \right]}{\lambda}.
+  $$
+  Using the values we've already defined ($u_s, u_0, and \lambda$), in conjunction with the fact that $U(t_{40}) = 40\text{ }^{\circ}\text{C}$, by definition, then we can calculate the time required:  
+  $$
+  \begin{align*}
+    t_{40} &= \frac{4 \left[ (40\text{ }^{\circ}\text{C} - 20\text{ }^{\circ}\text{C})^{-\frac{1}{4}} - (60\text{ }^{\circ}\text{C} - 20\text{ }^{\circ}\text{C})^{-\frac{1}{4}} \right]}{ 0.01186 \text{ min}^{-1}}, \\
+    t_{40} &\approx 25.37 \text{ min.}
+  \end{align*}
+  $$
+
+  (c) Using Maple or MATLAB, compare the solution of this natural cooling model with the solution for Newton's law of cooling by plotting them on the same system of axes, as in Figure 10.1. (Assume that with Newton's law of cooling, the coffee cools from $u_0 = 60 \text{ }^{\circ}\text{C}$ to $50 \text{ }^{\circ}\text{C}$ in 10 minutes.)  
+  Below is the code and output graph for this section. The code is using the same equations and values discussed previously in this section.  
+
+```{r}
+Ch101c <- function(T) {
+
+  #Chapter10.1 Model 
+  #Perform Rk4 for temperature of coffee
+  #We find solutions for both Newton's law of cooling 
+  #and for the natural law of cooling
+    
+  #T is the time length in minutes for [0, T]
+  N <- 1000   #N is the number of time nodes
+  h <- T/N    #This is the time step size in seconds
+  
+  #System Parameters
+  t0 <- 0     #Initial time
+  u0 <- 60    #Initial temperature
+  us <- 20    #Temperature of surroundings
+  lambda1 <- 0.0288  #Newton's Law of Cooling (Ex10.2)
+  lambda2 <- 0.01186  #Natural Law of Cooling (Edit this value)
+  p <- 5/4    #Need to edit this for natural law of cooling; see below
+  
+  #Slope functions for ODEs
+  f1 <- function(U) {-lambda1*(U - us)}     #Newton's law
+  f2 <- function(U) {-lambda2*(U - us)^p}   #Natural law
+ 
+  #Initialize vectors for time t and temperature U. 
+  t <- rep(0, N)   #Vector of N zeros (0 repeated N times)
+  U1 <- rep(0, N)   #Vector of N zeros (0 repeated N times)
+  U2 <- rep(0, N)   #Vector of N zeros (0 repeated N times)
+  t[1] <- t0       #Initial time t0
+  U1[1] <- u0       #Initial temperature
+  U2[1] <- u0       #Initial temperature
+
+  
+  #Runge-Kutta Loop (Generate temperature vectors U1 & U2)
+  for(i in 1:N) {
+    a1 <- h*f1(U1[i]);                        #f1 = slope of U1
+    a2 <- h*f2(U2[i]);                        #f2 = slope of U2
+    b1 <- h*f1(U1[i]+0.5*a1);                 #Half-step predictor
+    b2 <- h*f2(U2[i]+0.5*a2);                 #Half-step predictor
+    c1 <- h*f1(U1[i]+0.5*b1);                 #Half-step predictor 
+    c2 <- h*f2(U2[i]+0.5*b2);                 #Half-step predictor
+    d1 <- h*f1(U1[i]+c1);                     #Full-step predictor
+    d2 <- h*f2(U2[i]+c2);                     #Full-step predictor 
+    U1[i+1] <- U1[i]+(1/6)*(a1+2*b1+2*c1+d1); #Next U1 value
+    U2[i+1] <- U2[i]+(1/6)*(a2+2*b2+2*c2+d2); #Next U2 value
+    t[i+1] <- t[i] + h
+    }
+  
+  #Plot results
+  plot(t,U1,                
+        main = "Coffee Temperature",
+        xlab = "t (Minutes)",           #x-axis label
+        ylab = "Temperature (C)",       #y-axis label
+        type = "l",col="blue",          #Line type and color
+        xlim = c(0,T),  #x-axis range vector: c(0,T) = [0,T] 
+        ylim = c(20,70)  #y-axis range vector: c = "combine"
+       )
+  
+  lines(t,U2, type="l",col="red")       #Place second graph in plot
+  
+  legend("topright",
+         legend = c("Newton's Law", "Natural Law"), #Vector of legend items
+         col = c("blue","red"),  #vector of colors for legend items
+         lty = c(1,1)            #Vector of line types for legend items
+         )
+}
+```
+
+```{r}
+Ch101c(30)
+```
+  
+\newpage
+
+#### 10.2 Beer warming.  
+A cold beer is at a temperature of $10 \text{ }^{\circ}\text{C}$. After 10 minutes, the beer has warmed to a temperature of $15 \text{ }^{\circ}\text{C}$. If the room temperature is $30 \text{ }^{\circ}\text{C}$, how long will it take the beer to warm to $20 \text{ }^{\circ}\text{C}$
+, assuming that Newton's law of cooling applies?  
+
+In order to describe how the temperature of the beer changes over time (warming), assuming that Newton's law of cooling applies, we can use the following equation from section 10.1 of the book:  
+$$
+U(t) = (u_0 -u_s) e^{-\lambda t} + u_s.
+$$
+
+Before solving for the time at which the beer's temperature is $20 \text{ }^{\circ}\text{C}$, $t_{20}$, we must solve for this $\lambda$ term. First, let's solve for $\lambda$:  
+$$
+\begin{align*}
+U(t) &= (u_0 -u_s) e^{-\lambda t} + u_s, \\
+(U(t) - u_s) &= (u_0 - u_s) e^{-\lambda t}, \\
+e^{\lambda t} &= \frac{u_0 - u_s}{U(t) - u_s}, \\
+\lambda &= \frac{1}{t} \ln \frac{u_0 - u_s}{U(t) - u_s}. 
+\end{align*}
+$$
+Since we know that the beer is $15 \text{ }^{\circ}\text{C}$ after 10 minutes ($U(10\text{ min}) = 15 \text{ }^{\circ}\text{C}$), we can use these values to find the numerical value for $\lambda$.  
+$$
+\lambda = \frac{1}{10\text{ min}} \ln \left[ \frac{10\text{ }^{\circ}\text{C} - 30\text{ }^{\circ}\text{C}}{15\text{ }^{\circ}\text{C} - 30\text{ }^{\circ}\text{C}} \right], \\
+\lambda = 0.02877\text{ min}^{-1}.
+$$
+Now, with the $\lambda$ constant, we can solve for time, $t_{20}$, at which the temperature is $20\text{ }^{\circ}\text{C}, U(t_{20}) = 20\text{ }^{\circ}\text{C}$. Rearranging the previous equation to solve for time,  
+$$
+t_{20} = \frac{1}{\lambda} \ln \frac{u_0 - u_s}{U(t_{20}) - u_s},
+$$
+and substituting the values that we already know the values of ($u_0, u_s, U(t_{20}), and \lambda$), we can find the time at which the beer's temperature is $20\text{ }^{\circ}\text{C}$:  
+$$
+t_{20} = \frac{ \ln \frac{10\text{ }^{\circ}\text{C} - 30\text{ }^{\circ}\text{C}}{20\text{ }^{\circ}\text{C} - 30\text{ }^{\circ}\text{C}}}{0.028877 \text{ min}^{-1}}, \\
+t_{20} = 24.09 \text{ min}.
+$$
+
+Below is the code and graph for the Beer Warming problem.
+
+```{r}
+Ch102 <- function(T) {
+
+  #Chapter10.1 Model 
+  #Perform Rk4 for temperature of coffee, assuming Newton's law of cooling
+    
+  #T is the time length in minutes for [0, T]
+  N <- 1000   #N is the number of time nodes
+  h <- T/N    #This is the time step size in seconds
+  
+  #System Parameters
+  t0 <- 0     #Initial time
+  u0 <- 10    #Initial temperature
+  us <- 20    #Temperature of surroundings
+  lambda <- 0.02877   #Value of lambda
+  
+  #Slope function from ODE
+  f <- function(U) {-lambda*(U - us)}  
+ 
+  #Initialize vectors for time t and temperature U. 
+  t <- rep(0, N)   #Vector of N zeros (0 repeated N times)
+  U <- rep(0, N)   #Vector of N zeros (0 repeated N times)
+  t[1] <- t0       #Initial time t0
+  U[1] <- u0       #Initial temperature
+
+  
+  #Runge-Kutta Loop (Generate temperature vector U)
+  for(i in 1:N) {
+    a1 <- h*f(U[i]);                        #f = slope of U
+    b1 <- h*f(U[i]+0.5*a1);                 #Half-step predictor 
+    c1 <- h*f(U[i]+0.5*b1);                 #Half-step predictor 
+    d1 <- h*f(U[i]+c1);                     #Full-step predictor 
+    U[i+1] <- U[i]+(1/6)*(a1+2*b1+2*c1+d1); #Next U value
+    t[i+1] <- t[i] + h
+    }
+  
+  #Plot results
+  plot(t,U,                
+        main = "Beer Temperature",
+        xlab = "t (Minutes)",           #x-axis label
+        ylab = "Temperature (C)",       #y-axis label
+        type = "l",col="blue",          #Line type and color
+        xlim = c(0,T),  #x-axis vector: c(0,T) = [0,T] 
+        ylim = c(0,70)  #y-axis vector: c = "combine" in R
+       )
+  
+   legend("topright",
+         legend = c("Temperature"), #Vector of legend items
+         col = c("blue"),  #vector of colors for legend items
+         lty = c(1)        #Vector of line types for legend items
+         )
+}
+```
+
+```{r}
+Ch102(25)
+```
+
+
